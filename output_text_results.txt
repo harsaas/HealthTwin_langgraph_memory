@@ -1,0 +1,103 @@
+
+# CONVERT RAW TO PROCESSED
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/clean_data.py
+✅ Saved 2277 glucose records.
+✅ Saved 558104 heart rate records.
+✅ Saved 45 food log records.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+
+#Timeline series data inserted 
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/ingest_time_series.py
+Loading cleaned CSV files...
+Loaded 558557 combined records.
+Ingesting combined data into SQL database...
+Connecting to PostgreSQL at ep-weathered-grass-ap1ce2f2.c-7.us-east-1.aws.neon.tech:5432/neondb...
+Bulk-inserting combined biometrics into PostgreSQL...
+Successfully ingested 558557 records into PostgreSQL.
+Database connection closed.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+
+# scemantic food log data is embedded in pgvector and inserted in postgress as vector openAI embedding
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/ingest_semantic_timeline.py
+⏳ Reading cleaned food and lifestyle journals...
+🐘 Activating pgvector structures in your Postgres database...
+🧠 Inverting text entries into high-dimensional vector embeddings...
+📥 Committing context entries and vectors into PostgreSQL...
+✅ Semantic memory ingestion complete! Embedded and loaded 45 journal events.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+############# output via command line ################################
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/src/prompts/test_run.py
+Initializing Health Twin Agent Session...
+================================ Human Message =================================
+
+Can you check my glucose timeline? Why did I experience a massive blood sugar spike last Tuesday morning?
+================================== Ai Message ==================================
+Tool Calls:
+  search_semantic_timeline (call_h4rOn9HBauhq7u5IDeQPjpbh)
+ Call ID: call_h4rOn9HBauhq7u5IDeQPjpbh
+  Args:
+    user_question: massive blood sugar spike last Tuesday morning
+================================= Tool Message =================================
+Name: search_semantic_timeline
+
+{"success": true, "timestamp": "2020-07-21T12:29:13Z", "matched_log": "Chicken soup"}
+================================== Ai Message ==================================
+Tool Calls:
+  fetch_biometric_metrics (call_Xvoh3xTgbStmyr5PPdq3ZNIE)
+ Call ID: call_Xvoh3xTgbStmyr5PPdq3ZNIE
+  Args:
+    event_timestamp_str: 2020-07-21T12:29:13Z
+================================= Tool Message =================================
+Name: fetch_biometric_metrics
+
+{"peak_glucose_mg_dl": 114.0, "baseline_glucose_mg_dl": 84.0, "average_glucose_mg_dl": 98.66666666666667, "average_heart_rate_bpm": 76.90577552498173}
+================================== Ai Message ==================================
+
+On Tuesday morning, July 21, 2020, at 12:29 PM, you logged having chicken soup. Following this meal, your glucose levels experienced a significant spike. Here's a breakdown of the biometric data:
+
+- **Baseline Glucose Level:** 84 mg/dL
+- **Peak Glucose Level:** 114 mg/dL
+- **Average Glucose Level:** 98.67 mg/dL
+- **Average Heart Rate:** 76.91 bpm
+
+The spike in your blood sugar could be attributed to the ingredients in the chicken soup, which might have included carbohydrates or sugars that caused your glucose levels to rise. It's important to consider the specific contents of the soup, such as any added noodles or bread, which can contribute to such spikes.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+======================OUTPUT2======================
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/src/prompts/test_run.py
+Initializing Health Twin Agent Session...
+================================ Human Message =================================
+
+what is my average glucose and heart rate after eating pizza?
+================================== Ai Message ==================================
+Tool Calls:
+  search_semantic_timeline (call_q7JKc5QL1PIrXtu3fRvqhYoM)
+ Call ID: call_q7JKc5QL1PIrXtu3fRvqhYoM
+  Args:
+    user_question: eating pizza
+================================= Tool Message =================================
+Name: search_semantic_timeline
+
+{"success": true, "timestamp": "2020-07-21T21:29:13Z", "matched_log": "Plain cheese pizza"}
+================================== Ai Message ==================================
+Tool Calls:
+  fetch_biometric_metrics (call_6jXMZUR1i8lsFTvPtwrRbi19)
+ Call ID: call_6jXMZUR1i8lsFTvPtwrRbi19
+  Args:
+    event_timestamp_str: 2020-07-21T21:29:13Z
+================================= Tool Message =================================
+Name: fetch_biometric_metrics
+
+{"peak_glucose_mg_dl": 112.0, "baseline_glucose_mg_dl": 95.0, "average_glucose_mg_dl": 104.13888888888889, "average_heart_rate_bpm": 83.14070185185187}
+================================== Ai Message ==================================
+
+After eating plain cheese pizza on July 21, 2020, at 21:29:13 UTC, your average glucose level was approximately 104.1 mg/dL, with a peak at 112.0 mg/dL. Your average heart rate during this period was about 83.1 bpm. This data suggests a moderate increase in glucose levels and a stable heart rate following the meal.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 

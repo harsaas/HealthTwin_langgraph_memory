@@ -1,0 +1,32 @@
+
+# CONVERT RAW TO PROCESSED
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/clean_data.py
+✅ Saved 2277 glucose records.
+✅ Saved 558104 heart rate records.
+✅ Saved 45 food log records.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+
+#Timeline series data inserted 
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/ingest_time_series.py
+Loading cleaned CSV files...
+Loaded 558557 combined records.
+Ingesting combined data into SQL database...
+Connecting to PostgreSQL at ep-weathered-grass-ap1ce2f2.c-7.us-east-1.aws.neon.tech:5432/neondb...
+Bulk-inserting combined biometrics into PostgreSQL...
+Successfully ingested 558557 records into PostgreSQL.
+Database connection closed.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 
+
+
+# scemantic food log data is embedded in pgvector and inserted in postgress as vector openAI embedding
+
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> & c:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin\.venv-1\Scripts\python.exe c:/Users/harip/OneDrive/Desktop/langgraph_memory/Healthtwin/pipelines/ingest_semantic_timeline.py
+⏳ Reading cleaned food and lifestyle journals...
+🐘 Activating pgvector structures in your Postgres database...
+🧠 Inverting text entries into high-dimensional vector embeddings...
+📥 Committing context entries and vectors into PostgreSQL...
+✅ Semantic memory ingestion complete! Embedded and loaded 45 journal events.
+(.venv-1) PS C:\Users\harip\OneDrive\Desktop\langgraph_memory\Healthtwin> 

@@ -1,0 +1,23 @@
+.venv/
+.venv-1/
+__pycache__/
+*.pyc
+.env
+.DS_Store
+storage/
+
+.streamlit/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.vscode/
+
+# Project data/artifacts (keep repo lightweight)
+data/**
+!data/
+!data/processed_narratives/
+!data/processed_narratives/synthea_narratives.txt
+
+# Keep screenshots tracked
+# (do not ignore screenshots/)
+*.zip
